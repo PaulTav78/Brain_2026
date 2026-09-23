@@ -1,0 +1,7 @@
+from A_init_heavy import *
+
+speed(1000)
+straight(450, True)
+speed(1000)
+straight(-380, True)
+
