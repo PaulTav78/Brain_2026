@@ -1,0 +1,140 @@
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction, Side, Color, Button, Stop
+from pybricks.pupdevices import ColorSensor
+from pybricks.robotics import DriveBase
+from pybricks.hubs import PrimeHub
+from pybricks.tools import wait
+
+hub = PrimeHub()
+hub.display.orientation(up=Side.RIGHT)
+print("Battery : ", hub.battery.voltage(), 'mV')
+
+left_motor = Motor(Port.F, Direction.COUNTERCLOCKWISE)
+right_motor = Motor(Port.B)
+module_motor_left = Motor(Port.E)
+module_motor_right = Motor(Port.A)
+right_sensor = ColorSensor(Port.C)
+left_sensor = ColorSensor(Port.D)
+drive_base = DriveBase(left_motor, right_motor, wheel_diameter=63, axle_track=140)
+drive_base.use_gyro(True)
+
+def straight(distance, shouldStop=False):
+    """Avancer tout droit d'une distance"""
+    if shouldStop == True:
+        drive_base.settings(straight_acceleration=(500))
+        drive_base.straight(distance, then=Stop.COAST_SMART)
+    else:
+        drive_base.settings(straight_acceleration=(1000))
+        drive_base.straight(distance, then=Stop.NONE)
+
+def turn(angle):
+    drive_base.turn(angle)
+
+def straight_motor_left(distance, motor_speed, motor_angle, shouldStop=False):
+    drive_base.settings(straight_acceleration=1000)
+    module_motor_left.run_angle(motor_speed, motor_angle, then=Stop.HOLD, wait=False)
+    initial = drive_base.distance()
+    while not module_motor_left.done() or abs(drive_base.distance() - initial) < abs(distance):
+        
+        if abs(drive_base.distance() - initial) < abs(distance):
+            drive_base.drive(200, 0)
+        else:
+            drive_base.drive(0, 0)  
+
+        wait(10)
+    drive_base.stop()
+
+
+
+
+
+def straight_motor_right(distance, motor_speed, motor_angle, shouldStop=False):
+    drive_base.settings(straight_acceleration=700)
+    module_motor_right.run_angle(motor_speed, motor_angle, then=Stop.HOLD, wait=False)
+    initial = drive_base.distance()
+    while not module_motor_right.done() or abs(drive_base.distance() - initial) < abs(distance):
+
+        if abs(drive_base.distance() - initial) < abs(distance):
+            drive_base.drive(500, 0)
+        else:
+            drive_base.drive(0, 0)  
+
+        wait(10)
+    drive_base.stop()
+
+
+def all_motor(distance,
+              left_speed, left_angle,
+              right_speed, right_angle,
+              shouldStop=False):
+
+    drive_base.settings(straight_acceleration=700)
+
+    module_motor_left.run_angle(left_speed, left_angle, then=Stop.HOLD, wait=False)
+    module_motor_right.run_angle(right_speed, right_angle, then=Stop.HOLD, wait=False)
+
+    initial = drive_base.distance()
+
+    while True:
+
+        if abs(drive_base.distance() - initial) < abs(distance):
+            drive_base.drive(200, 0)
+        else:
+            drive_base.drive(0, 0) 
+
+        # Condition d’arrêt :
+        # Les DEUX moteurs doivent avoir terminé ET la distance doit être atteinte
+        if module_motor_left.done() and module_motor_right.done() and abs(drive_base.distance() - initial) >= abs(distance):
+            break
+
+        wait(10)
+
+    drive_base.stop()
+
+
+def curve(radius, angle, shouldStop=False):
+    """Faire une courbe avec en 1ère argument le rayon puis l'angle"""
+    if shouldStop == True:
+        drive_base.settings(straight_acceleration=(700))
+        drive_base.curve(radius, angle, then=Stop.COAST_SMART)
+    else:
+        drive_base.settings(straight_acceleration=(1000))
+        drive_base.curve(radius, angle, then=Stop.NONE)
+
+def set_precision_mode():
+    """Change la vitesse -> précision"""
+    drive_base.settings(
+        straight_speed=200,
+        straight_acceleration=250,
+        turn_rate=40,
+        turn_acceleration=100
+    )
+def set_classic_mode():
+    """Change la vitesse -> medium"""
+    drive_base.settings(
+        straight_speed=450,
+        straight_acceleration=100,
+        turn_rate=100,
+        turn_acceleration=200
+    )
+def set_fast_mode():
+    """Change la vitesse -> Rapide"""
+    drive_base.settings(
+        straight_speed=900,
+        straight_acceleration=900,
+        turn_rate=130,
+        turn_acceleration=300
+    )
+
+# Positions de la boîte (à mesurer toi-même)
+BEHIND = 8    # ex: arrière
+OFF = 60     # ex: neutre
+
+def speed(speed):
+    drive_base.settings(straight_speed=speed)
+
+
+
+def switch_to(position):
+    """Change la boîte de vitesse en mettant module_left sur la bonne position"""
+    module_motor_left.run_target(500, position, then=Stop.HOLD, wait=True)
