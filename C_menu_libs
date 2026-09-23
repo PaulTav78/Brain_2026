@@ -1,0 +1,21 @@
+from pybricks.hubs import PrimeHub
+from pybricks.tools import hub_menu
+from pybricks.parameters import Side
+
+hub = PrimeHub()
+hub.display.orientation(Side.RIGHT)
+
+def store_number(nb):
+    hub.system.storage(0, write=bytes([nb]))
+
+def get_stored_number():
+    read_value = [v for v in hub.system.storage(0, read=1)]
+    return read_value[0]
+
+def show_menu(nb_items):
+    menu_items = [v for v in range(1, nb_items + 1)]
+    default_index = get_stored_number() % nb_items
+    ordered_menu = menu_items[default_index:] + menu_items[:default_index]
+    selected_index = hub_menu(*ordered_menu)
+    store_number(selected_index - 1)
+    return str(selected_index)
