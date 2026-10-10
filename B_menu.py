@@ -1,0 +1,21 @@
+from C_menu_libs import show_menu, store_number
+
+NB_ITEMS = 7
+selected = show_menu(nb_items=NB_ITEMS)
+
+# Based on the selection, run a program.
+if selected == "1":
+    import run_ship
+if selected == "2":
+    import run_brossage_de_surface
+if selected == "3":
+    import run_indiana
+if selected == "4":
+    import run_balance
+if selected == "5":
+    import run_cailloux
+if selected == "6":
+    import run_grue
+if selected == "7":
+    import run_forum
+store_number(int(selected) % NB_ITEMS) # code du menu, ne pas enlever
