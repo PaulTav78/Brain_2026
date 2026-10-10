@@ -9,22 +9,21 @@ hub = PrimeHub()
 hub.display.orientation(up=Side.RIGHT)
 print("Battery : ", hub.battery.voltage(), 'mV')
 
-left_motor = Motor(Port.F, Direction.COUNTERCLOCKWISE)
-right_motor = Motor(Port.B)
-module_motor_left = Motor(Port.E)
-module_motor_right = Motor(Port.A)
-right_sensor = ColorSensor(Port.C)
-left_sensor = ColorSensor(Port.D)
+left_motor = Motor(Port.A, Direction.COUNTERCLOCKWISE)
+right_motor = Motor(Port.E)
+module_motor_left = Motor(Port.B)
+module_motor_right = Motor(Port.F)
 drive_base = DriveBase(left_motor, right_motor, wheel_diameter=63, axle_track=140)
 drive_base.use_gyro(True)
+
 
 def straight(distance, shouldStop=False):
     """Avancer tout droit d'une distance"""
     if shouldStop == True:
-        drive_base.settings(straight_acceleration=(500))
+        drive_base.settings(straight_acceleration=(1000))
         drive_base.straight(distance, then=Stop.COAST_SMART)
     else:
-        drive_base.settings(straight_acceleration=(1000))
+        drive_base.settings(straight_acceleration=(1500))
         drive_base.straight(distance, then=Stop.NONE)
 
 def turn(angle):
