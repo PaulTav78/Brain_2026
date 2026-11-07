@@ -1,18 +1,12 @@
 from A_init_heavy import *
 
-speed(100)
-straight(-30)
-speed(1000)
-straight(360)
+wall_homing()
+speed(200)
+straight(340)
 turn(45)
-straight(400)
+straight(460)
 turn(-45)
 set_precision_mode()
-straight(160)
-speed(600)
+wait(2000)
 straight(150)
-straight(-150)
-turn(-45)
-straight(-500)
-
-                                                                                                
+speed(400)                                                                                                
